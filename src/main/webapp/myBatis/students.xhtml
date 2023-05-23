@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:head/>
+<h:body>
+    <h2>Students in #{studentsInCourse.course.name} course:</h2>
+    <ol>
+        <ui:repeat value="#{studentsInCourse.course.students}" var="student">
+            <li>#{student.name}</li>
+        </ui:repeat>
+    </ol>
+    <h:form>
+        <h:inputText a:placeholder="name" value="#{studentsInCourse.studentToAdd.name}" required="true" />
+        <h:commandButton value="Add student to the course" action="#{studentsInCourse.addStudent}" >
+            <f:param name="courseId" value="#{studentsInCourse.course.id}" />
+        </h:commandButton>
+    </h:form>
+    <h:link outcome="/myBatis/course" value="Back to course page"/>
+</h:body>
+</html>

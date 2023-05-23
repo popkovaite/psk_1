@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:head/>
+<h:body>
+    <h2>#{coursesOfStudent.student.name}</h2>
+    <ul>
+        <ui:repeat value="#{coursesOfStudent.student.courses}" var="course">
+            <li>
+                <h:link value="#{course.name}" outcome="courseDetails?courseId=#{course.id}" />
+            </li>
+        </ui:repeat>
+    </ul>
+    <h3> Choose existing course: </h3>
+    <h:form>
+        <h:selectOneMenu name="cars" value="#{coursesOfStudent.chosenCourse.id}">
+            <f:selectItems value="#{coursesOfStudent.availableCourse}" var="c"
+                           itemLabel="#{c.name}" itemValue="#{c.id}" />
+        </h:selectOneMenu>
+        <h:commandButton value="select"
+                         actionListener="#{coursesOfStudent.chooseCourse}"
+                         action="#{'studentDetails?faces-redirect=true&amp;studentId='.concat(coursesOfStudent.student.id)}">
+            <f:param name="studentId" value="#{coursesOfStudent.student.id}" />
+        </h:commandButton>
+    </h:form>
+    <h:link outcome="index" value="Back to home page"/>
+</h:body>
+</html>

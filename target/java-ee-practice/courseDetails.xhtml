@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://java.sun.com/jsf/core"
+>
+<h:head/>
+<h:body>
+    <h2>Students in #{studentsInCourse.course.name} Course #{studentsInCourse.course.creditNr}</h2>
+    <h:form>
+    <h:commandButton value="Try"  action="#{studentsInCourse.optimisticlock}">
+        <f:param name="courseId" value="#{studentsInCourse.course.id}" />
+    </h:commandButton>
+        <h:outputText value="Value was already modified by other user. If you want to override it - try again" rendered="#{param['error'] == 'optimistic-lock-exception'}" />
+    </h:form>
+
+    <h:form>
+        <h:commandButton value="Calculate students?" disabled="#{generateLongCalculation.calculationRunning}" action="#{generateLongCalculation.calculateNumber()}">
+            <f:param name="courseId" value="#{generateLongCalculation.course.id}" />
+            <f:ajax execute="@form" render="result" />
+        </h:commandButton>
+
+        <h:outputText id="result" value="#{generateLongCalculation.studentNumber}" rendered="#{not generateLongCalculation.calculationRunning}" />
+        <h:outputText value="Student calculation in progress..." rendered="#{generateLongCalculation.calculationRunning}" />
+
+    </h:form>
+    <ul>
+        <ui:repeat value="#{studentsInCourse.course.students}" var="student">
+            <li>
+                <h:link value="#{student.name}" outcome="studentDetails?studentId=#{student.id}"/>
+                    #{student.getFaculties()}
+                #{student.studentNr}
+            </li>
+        </ui:repeat>
+    </ul>
+    <h3> Choose existing student to the course: </h3>
+    <h:form>
+        <h:selectOneMenu  value="#{studentsInCourse.chosenStudent.id}">
+            <f:selectItems value="#{studentsInCourse.availableStudents}" var="stud"
+                           itemLabel="#{stud.name}" itemValue="#{stud.id}" />
+        </h:selectOneMenu>
+        <h:commandButton value="select"
+                         actionListener="#{studentsInCourse.chooseStudent}"
+                         action="#{'courseDetails?faces-redirect=true&amp;courseId='.concat(studentsInCourse.course.id)}">
+            <f:param name="courseId" value="#{studentsInCourse.course.id}" />
+        </h:commandButton>
+    </h:form>
+    <h3> Add student to the course: </h3>
+    <h:form>
+        <h:inputText a:placeholder="name" value="#{studentsInCourse.studentToAdd.name}" required="true" />
+        <h:inputText a:placeholder="student number" value="#{studentsInCourse.studentToAdd.studentNr}" required="true" />
+        <h:commandButton value="Add"
+                         actionListener="#{studentsInCourse.addStudent}"
+                         action="#{'courseDetails?faces-redirect=true&amp;courseId='.concat(studentsInCourse.course.id)}">
+            <f:param name="courseId" value="#{studentsInCourse.course.id}" />
+        </h:commandButton>
+    </h:form>
+    <h:link outcome="index" value="Back to home page"/>
+</h:body>
+</html>
